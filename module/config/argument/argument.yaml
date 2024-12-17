@@ -44,6 +44,7 @@ Emulator:
       scrcpy,
       nemu_ipc,
       ldopengl,
+      MaaTools,
     ]
   ControlMethod:
     value: MaaTouch
@@ -53,6 +54,7 @@ Emulator:
       minitouch,
       Hermit,
       MaaTouch,
+      MaaTools,
     ]
   ScreenshotDedithering: false
   AdbRestart: false
@@ -74,6 +76,7 @@ EmulatorInfo:
       MuMuPlayerX,
       MuMuPlayer12,
       MEmuPlayer,
+      MaaTools,
     ]
   name:
     value: null
@@ -744,3 +747,24 @@ AzurLaneUncensored:
     display: disabled
 GameManager:
   AutoRestart: true
+MaaTools:
+  _info:
+    name: MaaTools
+    help: MaaTools connection settings
+  Host:
+    value: 127.0.0.1
+    type: input
+    help: Server host address
+  Port:
+    value: 17333
+    type: input
+    help: Server port number
+  ServerRoot:
+    value: /
+    type: input
+    help: Server API root path
+  Enable:
+    type: checkbox
+    value: true
+    option: [true, false]
+    help: Enable MaaTools control method

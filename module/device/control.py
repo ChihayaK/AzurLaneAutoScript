@@ -149,7 +149,7 @@ class Control(Hermit, Minitouch, Scrcpy, MaaTouch, NemuIpc, MaaTools):
             random_range=random_range,
             padding=padding,
             whitelist_area=whitelist_area,
-            blacklist_area=blacklist_area
+            blacklist_area=blacklÏist_area
         )
         self.swipe(p1, p2, duration=duration, name=name, distance_check=distance_check)
 

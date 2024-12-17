@@ -120,7 +120,8 @@
           "DroidCast_raw",
           "scrcpy",
           "nemu_ipc",
-          "ldopengl"
+          "ldopengl",
+          "MaaTools"
         ]
       },
       "ControlMethod": {
@@ -131,7 +132,8 @@
           "uiautomator2",
           "minitouch",
           "Hermit",
-          "MaaTouch"
+          "MaaTouch",
+          "MaaTools"
         ]
       },
       "ScreenshotDedithering": {
@@ -161,7 +163,8 @@
           "MuMuPlayer",
           "MuMuPlayerX",
           "MuMuPlayer12",
-          "MEmuPlayer"
+          "MEmuPlayer",
+          "PlayCover"
         ]
       },
       "name": {
