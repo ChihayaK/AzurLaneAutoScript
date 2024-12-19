@@ -129,22 +129,22 @@ class MaaToolsCommand:
             self,
             operation: str,
             phase: int = 0,
-            x: int = 0,
-            y: int = 0,
+            x: Optional[int] = None,
+            y: Optional[int] = None,
             ms: int = 10,
             pressure: int = 100
     ):
         self.operation = operation
         self.phase = phase
-        self.x = x
-        self.y = y
+        self.x = x if x is not None else 0
+        self.y = y if y is not None else 0
         self.ms = ms
         self.pressure = pressure
 
     def to_bytes(self) -> bytes:
         """Convert command to MaaTools binary format."""
         if self.operation == 'touch':
-            # Pack touch command: phase, x, y
+            # Ensure x and y are provided for touch operations
             payload = struct.pack('>BHH', self.phase, self.x, self.y)
             payload_length = 4 + len(payload)
             return struct.pack('>H', payload_length) + b'TUCH' + payload
@@ -156,7 +156,7 @@ class MaaToolsCommand:
 
 class MaaToolsBuilder:
     """Builds sequences of MaaTools protocol commands."""
-    DEFAULT_DELAY = 0.05
+    DEFAULT_DELAY = 0.1
 
     def __init__(self, device):
         self.device = device
@@ -181,9 +181,9 @@ class MaaToolsBuilder:
         self.commands.append(MaaToolsCommand('touch', phase=1, x=x, y=y))
         return self
 
-    def up(self) -> 'MaaToolsBuilder':
+    def up(self, x: int = 0, y: int = 0) -> 'MaaToolsBuilder':
         """Add a touch up command."""
-        self.commands.append(MaaToolsCommand('touch', phase=2))
+        self.commands.append(MaaToolsCommand('touch', phase=3, x=x, y=y))
         return self
 
     def wait(self, ms: int) -> 'MaaToolsBuilder':
@@ -198,8 +198,8 @@ class MaaToolsBuilder:
         if not self.device.config.DEVICE_OVER_HTTP:
             x = int(x / 1280 * self.device.maatools.max_x)
             y = int(y / 720 * self.device.maatools.max_y)
-            logger.info(f'Coordinate conversion: ({original_x}, {original_y}) -> ({x}, {y})')
-            logger.info(f'Using scaling factors: {self.device.maatools.max_x}/1280, {self.device.maatools.max_y}/720')
+            # logger.info(f'Coordinate conversion: ({original_x}, {original_y}) -> ({x}, {y})')
+            # logger.info(f'Using scaling factors: {self.device.maatools.max_x}/1280, {self.device.maatools.max_y}/720')
         return x, y
 
     def to_commands(self) -> bytes:
@@ -464,6 +464,8 @@ class MaaTools(MaaToolsPlatform):
 
         # Get image size
         size_data = self.maatools.sock.recv(4)
+        if len(size_data) < 4:
+            raise MaaToolsError("Incomplete size data received")
         image_size = struct.unpack('>I', size_data)[0]
 
         # Get image data
@@ -485,6 +487,9 @@ class MaaTools(MaaToolsPlatform):
                 raise MaaToolsError(f"Unexpected image format with {channels} channels")
 
             image = np.ascontiguousarray(image, dtype=np.uint8)
+
+            # **Add Vertical Flip to Match Other Platform**
+            # image = cv2.flip(image, 0)
 
             if not hasattr(self, '_first_maatools_screenshot'):
                 logger.info(
@@ -516,7 +521,7 @@ class MaaTools(MaaToolsPlatform):
         builder.clear().down(x, y).wait(100)
         self.send_commands(builder)
 
-        builder.clear().up()
+        builder.clear().up(x, y)
         self.send_commands(builder)
 
     def click(self, button, count=1):
