@@ -101,6 +101,8 @@ class Device(Screenshot, Control, AppControl):
 
         # Early init
         if self.config.is_actual_task:
+            if self.config.Emulator_ControlMethod == 'MaaTools':
+                return # Skip other early init
             if self.config.Emulator_ControlMethod == 'MaaTouch':
                 self.early_maatouch_init()
             if self.config.Emulator_ControlMethod == 'minitouch':
@@ -143,6 +145,9 @@ class Device(Screenshot, Control, AppControl):
                 and self.config.Emulator_ControlMethod == 'minitouch':
             logger.warning('Use MaaTouch on ldplayer')
             self.config.Emulator_ControlMethod = 'MaaTouch'
+        if self.config.Emulator_ControlMethod == 'MaaTools':
+            logger.info('Use MaaTools')
+            self.config.Emulator_ControlMethod = 'MaaTools'
         pass
 
     def handle_night_commission(self, daily_trigger='21:00', threshold=30):

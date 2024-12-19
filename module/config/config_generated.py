@@ -444,7 +444,8 @@ class GeneratedConfig:
     Storage_Storage = {}
 
     # Group `MaaTools`
-    MaaTools_Host = "127.0.0.1"
-    MaaTools_Port = 17233
-    MaaTools_ServerRoot = "/"
     MaaTools_Enable = True
+    MaaTools_Host = 'localhost'  # Or remote host
+    MaaTools_Port = 17233
+    Emulator_ScreenshotMethod = 'MaaTools'
+    Emulator_ControlMethod = 'MaaTools'

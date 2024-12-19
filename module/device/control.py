@@ -25,7 +25,7 @@ class Control(Hermit, Minitouch, Scrcpy, MaaTouch, NemuIpc, MaaTools):
             'Hermit': self.click_hermit,
             'MaaTouch': self.click_maatouch,
             'nemu_ipc': self.click_nemu_ipc,
-            'MaaTools': self.click_maatouch,
+            'MaaTools': self.click_maatools,
         }
 
     def click(self, button, control_check=True):
